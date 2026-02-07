@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="mb-4">Dashboard</h2>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-bg-primary">
+            <div class="card-body">
+                <h5>Applied</h5>
+                <h3>{{ applied_count }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-bg-warning">
+            <div class="card-body">
+                <h5>Interview</h5>
+                <h3>{{ interview_count }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-bg-danger">
+            <div class="card-body">
+                <h5>Rejected</h5>
+                <h3>{{ rejected_count }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-bg-success">
+            <div class="card-body">
+                <h5>Offer</h5>
+                <h3>{{ offer_count }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a href="/add/" class="btn btn-success mb-3">Add Job Application</a>
+
+<h4>Filter by Status</h4>
+<div class="mb-3">
+    <a href="/" class="btn btn-secondary btn-sm">All</a>
+    <a href="/?status=Applied" class="btn btn-primary btn-sm">Applied</a>
+    <a href="/?status=Interview" class="btn btn-warning btn-sm">Interview</a>
+    <a href="/?status=Rejected" class="btn btn-danger btn-sm">Rejected</a>
+    <a href="/?status=Offer" class="btn btn-success btn-sm">Offer</a>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Company</th>
+            <th>Role</th>
+            <th>Date Applied</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for app in applications %}
+        <tr>
+            <td>{{ app.company }}</td>
+            <td>{{ app.role }}</td>
+            <td>{{ app.applied_date|date:"Y-m-d" }}</td>
+            <td>{{ app.status }}</td>
+            <td>
+                <a href="/edit/{{ app.id }}/" class="btn btn-sm btn-warning">Edit</a>
+                <a href="/delete/{{ app.id }}/" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No applications yet.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
