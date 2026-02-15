@@ -11,4 +11,6 @@ urlpatterns = [
 
     
     path('logout/', views.user_logout, name='logout'),
+    path('api/jobs/', views.job_list_api, name='job_list_api'),
+
 ]

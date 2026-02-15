@@ -3,6 +3,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import JobApplicationForm
 from .models import JobApplication
 from django.contrib.auth import logout
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import JobApplicationSerializer
+
 
 
 @login_required
@@ -61,3 +65,9 @@ def delete_application(request, id):
 def user_logout(request):
     logout(request)
     return redirect('/login/')
+
+@api_view(['GET'])
+def job_list_api(request):
+    jobs = JobApplication.objects.all()
+    serializer = JobApplicationSerializer(jobs, many=True)
+    return Response(serializer.data)
