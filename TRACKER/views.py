@@ -1,3 +1,5 @@
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import JobApplicationForm
@@ -7,7 +9,15 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import JobApplicationSerializer
 
+def register(request):
+    form = UserCreationForm(request.POST or None)
 
+    if form.is_valid():
+        user = form.save()
+        login(request, user)  
+        return redirect('home')
+
+    return render(request, 'register.html', {'form': form})
 
 @login_required
 def home(request):
@@ -34,7 +44,7 @@ def home(request):
 
 @login_required
 def add_application(request):
-    form = JobApplicationForm(request.POST or None)
+    form = JobApplicationForm(request.POST or None, request.FILES or None)
     if form.is_valid():
         job = form.save(commit=False)
         job.user = request.user
@@ -45,19 +55,31 @@ def add_application(request):
 
 @login_required
 def edit_application(request, id):
-    application = get_object_or_404(JobApplication, id=id)
+    application = get_object_or_404(
+        JobApplication,
+        id=id,
+        user=request.user
+    )
+
     form = JobApplicationForm(request.POST or None, instance=application)
+
     if form.is_valid():
         job = form.save(commit=False)
-        job.user = application.user
+        job.user = request.user
         job.save()
         return redirect('home')
+
     return render(request, 'add_application.html', {'form': form})
 
 
 @login_required
 def delete_application(request, id):
-    application = get_object_or_404(JobApplication, id=id)
+    application = get_object_or_404(
+        JobApplication,
+        id=id,
+        user=request.user
+    )
+
     application.delete()
     return redirect('home')
 

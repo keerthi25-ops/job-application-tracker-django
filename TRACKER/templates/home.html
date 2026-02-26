@@ -74,6 +74,13 @@
                 <a href="/edit/{{ app.id }}/" class="btn btn-sm btn-warning">Edit</a>
                 <a href="/delete/{{ app.id }}/" class="btn btn-sm btn-danger">Delete</a>
             </td>
+            <td>
+                {% if app.resume %}
+                <a href="{{ app.resume.file.url }}" target="_blank">
+                Download Resume
+                </a>
+                {% endif %}
+            </td>
         </tr>
         {% empty %}
         <tr>

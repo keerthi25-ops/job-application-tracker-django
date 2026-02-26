@@ -1,8 +1,12 @@
 from django.contrib import admin
 from .models import  Company, Resume, JobApplication
 class JobApplicationAdmin(admin.ModelAdmin):
-    list_display = ('company', 'role', 'status', 'applied_date', 'user')
-    readonly_fields = ('applied_date',)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(user=request.user)
 
 
 admin.site.register(Company)
