@@ -1,95 +1,47 @@
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
-from .forms import JobApplicationForm
-from .models import JobApplication
-from django.contrib.auth import logout
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from .serializers import JobApplicationSerializer
-
-def register(request):
-    form = UserCreationForm(request.POST or None)
-
-    if form.is_valid():
-        user = form.save()
-        login(request, user)  
-        return redirect('home')
-
-    return render(request, 'register.html', {'form': form})
-
-@login_required
-def home(request):
-    applications = JobApplication.objects.filter(user=request.user)
-    status_filter = request.GET.get('status')
-
-    if status_filter:
-        applications = applications.filter(status=status_filter)
-
-    applied_count = applications.filter(status='Applied').count()
-    interview_count = applications.filter(status='Interview').count()
-    rejected_count = applications.filter(status='Rejected').count()
-    offer_count = applications.filter(status='Offer').count()
-
-    context = {
-        'applications': applications,
-        'applied_count': applied_count,
-        'interview_count': interview_count,
-        'rejected_count': rejected_count,
-        'offer_count': offer_count,
-    }
-    return render(request, 'home.html', context)
-
+from django.shortcuts import render, redirect
+from .forms import JobApplicationForm, CompanyForm, ResumeForm
+from .models import Company   # IMPORTANT
+from django.contrib import messages
 
 @login_required
 def add_application(request):
-    form = JobApplicationForm(request.POST or None, request.FILES or None)
-    if form.is_valid():
-        job = form.save(commit=False)
-        job.user = request.user
-        job.save()
-        return redirect('home')
-    return render(request, 'add_application.html', {'form': form})
+    if request.method == 'POST':
+        job_form = JobApplicationForm(request.POST)
+        company_form = CompanyForm(request.POST)
+        resume_form = ResumeForm(request.POST, request.FILES)
+
+        if job_form.is_valid() and company_form.is_valid() and resume_form.is_valid():
+
+            company, created = Company.objects.get_or_create(
+                name=company_form.cleaned_data['name'],
+                defaults={'location': company_form.cleaned_data['location']}
+            )
+
+            resume = resume_form.save()
+
+            job = job_form.save(commit=False)
+            job.user = request.user
+            job.company = company
+            job.resume = resume
+            job.save()
+            messages.success(request, "Job application added successfully!")
 
 
-@login_required
-def edit_application(request, id):
-    application = get_object_or_404(
-        JobApplication,
-        id=id,
-        user=request.user
-    )
+            return redirect('home')
 
-    form = JobApplicationForm(request.POST or None, instance=application)
+        else:
+            print(job_form.errors)
+            print(company_form.errors)
+            print(resume_form.errors)
 
-    if form.is_valid():
-        job = form.save(commit=False)
-        job.user = request.user
-        job.save()
-        return redirect('home')
+    else:
+        job_form = JobApplicationForm()
+        company_form = CompanyForm()
+        resume_form = ResumeForm()
 
-    return render(request, 'add_application.html', {'form': form})
-
-
-@login_required
-def delete_application(request, id):
-    application = get_object_or_404(
-        JobApplication,
-        id=id,
-        user=request.user
-    )
-
-    application.delete()
-    return redirect('home')
-
-
-def user_logout(request):
-    logout(request)
-    return redirect('/login/')
-
-@api_view(['GET'])
-def job_list_api(request):
-    jobs = JobApplication.objects.all()
-    serializer = JobApplicationSerializer(jobs, many=True)
-    return Response(serializer.data)
+    return render(request, 'add_application.html', {
+        'job_form': job_form,
+        'company_form': company_form,
+        'resume_form': resume_form
+    })
