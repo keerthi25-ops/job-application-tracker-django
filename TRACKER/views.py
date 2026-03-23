@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from .forms import JobApplicationForm, CompanyForm, ResumeForm
 from .models import Company, JobApplication   # IMPORTANT
 from django.contrib import messages
+from django.shortcuts import get_object_or_404
 @login_required
 def home(request):
     applications = JobApplication.objects.filter(user=request.user)
@@ -56,4 +57,19 @@ def add_application(request):
         'job_form': job_form,
         'company_form': company_form,
         'resume_form': resume_form
+    })
+@login_required
+def edit_application(request, id):
+    application = get_object_or_404(JobApplication, id=id, user=request.user)
+
+    job_form = JobApplicationForm(request.POST or None, instance=application)
+
+    if job_form.is_valid():
+        job = job_form.save(commit=False)
+        job.user = request.user
+        job.save()
+        return redirect('home')
+
+    return render(request, 'add_application.html', {
+        'job_form': job_form
     })
