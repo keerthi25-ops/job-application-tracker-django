@@ -7,12 +7,6 @@ This project helps job seekers track application status, deadlines, interviews, 
 
 🔗 Live Demo: https://job-application-tracker-django-2.onrender.com/
 
-## Features
-- User authentication
-- Job tracking with CRUD
-- REST APIs
-- Dashboard analytics
-
 ## Tech Stack
 - Django
 - SQLite
@@ -32,13 +26,10 @@ This project helps job seekers track application status, deadlines, interviews, 
 
 ## 🛠️ Tech Stack
 
-- **Language:** Python  
-- **Database:** SQLite / CSV (depending on version)  
-- **Libraries:**  
-  - `sqlite3` / `pandas`
-  - `datetime`
-  - `tabulate` (optional for table display)
-
+- **Language:** Python   
+- Django
+- SQLite
+- Bootstrap
 ---
 
 ## 📂 Project Structure
