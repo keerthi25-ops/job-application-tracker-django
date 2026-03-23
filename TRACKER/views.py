@@ -1,8 +1,20 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from .forms import JobApplicationForm, CompanyForm, ResumeForm
-from .models import Company   # IMPORTANT
+from .models import Company, JobApplication   # IMPORTANT
 from django.contrib import messages
+@login_required
+def home(request):
+    applications = JobApplication.objects.filter(user=request.user)
+    
+    status_filter = request.GET.get('status')
+    if status_filter:
+        applications = applications.filter(status=status_filter)
+
+    context = {
+        'applications': applications,
+    }
+    return render(request, 'home.html', context)
 
 @login_required
 def add_application(request):
