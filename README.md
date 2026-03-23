@@ -1,5 +1,3 @@
-﻿# job-application-tracker-django
-
 # Job Application Tracker
 
 A simple and efficient **Job Application Tracker** to manage, monitor, and organise job applications in one place.  
