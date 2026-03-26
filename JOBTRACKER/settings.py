@@ -26,10 +26,18 @@ SECRET_KEY = 'django-insecure-2$if4l=)c$vr3mrz=_!6i@e^6dbq7obkh9_@8y571_nhd+dx+)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = os.getenv(
-    "ALLOWED_HOSTS",
-    "127.0.0.1,localhost,job-application-tracker-django-2.onrender.com",
-).split(",")
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv(
+        "ALLOWED_HOSTS",
+        "127.0.0.1,localhost,.onrender.com",
+    ).split(",")
+    if host.strip()
+]
+
+render_host = os.getenv("RENDER_EXTERNAL_HOSTNAME")
+if render_host and render_host not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(render_host)
 
 
 # Application definition
