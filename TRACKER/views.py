@@ -7,7 +7,9 @@ from .models import Company, JobApplication, Resume
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_POST
+from django.db.models import Count
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -164,3 +166,30 @@ def job_list_api(request):
     jobs = JobApplication.objects.filter(user=request.user).select_related('company', 'resume')
     serializer = JobApplicationSerializer(jobs, many=True)
     return Response(serializer.data)
+
+
+class JobStatsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        jobs = JobApplication.objects.filter(user=user)
+        total = jobs.count()
+        stats = jobs.values('status').annotate(count=Count('status'))
+
+        status_dict = {
+            "applied": 0,
+            "interview": 0,
+            "offer": 0,
+            "rejected": 0
+        }
+
+        for item in stats:
+            key = str(item['status']).lower()
+            if key in status_dict:
+                status_dict[key] = item['count']
+
+        return Response({
+            "total": total,
+            **status_dict
+        })

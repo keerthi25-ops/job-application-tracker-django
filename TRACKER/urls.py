@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import JobStatsView
 from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('', views.home, name='home'),
@@ -12,6 +13,8 @@ urlpatterns = [
     
     path('logout/', views.user_logout, name='logout'),
     path('api/jobs/', views.job_list_api, name='job_list_api'),
+    path('api/jobs/stats/', views.JobStatsView.as_view(), name='job_stats_api'),
+    path('api/stats/', JobStatsView.as_view(), name='job-stats'),
     path('register/', views.register, name='register'),
     path(
     'password-reset/',
