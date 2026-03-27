@@ -1,60 +1,66 @@
 {% extends 'base.html' %}
+{% block title %}Dashboard | Job Tracker{% endblock %}
 
 {% block content %}
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 gap-3">
+    <div>
+        <h2 class="mb-1 fw-bold">Dashboard</h2>
+        <p class="text-secondary mb-0">Track every application stage in one clean view.</p>
+    </div>
+    <a href="{% url 'add_application' %}" class="btn btn-brand">Add Job Application</a>
+</div>
 
-<h2 class="mb-4">Dashboard</h2>
-
-<div class="row mb-4">
+<div class="row g-3 mb-4">
     <div class="col-md-3">
-        <div class="card text-bg-primary">
+        <div class="card border-0 shadow-sm h-100" style="background:#dbeafe;">
             <div class="card-body">
-                <h5>Applied</h5>
-                <h3>{{ applied_count }}</h3>
+                <h6 class="text-uppercase text-secondary mb-2">Applied</h6>
+                <h3 class="mb-0 fw-bold">{{ applied_count }}</h3>
             </div>
         </div>
     </div>
 
     <div class="col-md-3">
-        <div class="card text-bg-warning">
+        <div class="card border-0 shadow-sm h-100" style="background:#fef3c7;">
             <div class="card-body">
-                <h5>Interview</h5>
-                <h3>{{ interview_count }}</h3>
+                <h6 class="text-uppercase text-secondary mb-2">Interview</h6>
+                <h3 class="mb-0 fw-bold">{{ interview_count }}</h3>
             </div>
         </div>
     </div>
 
     <div class="col-md-3">
-        <div class="card text-bg-danger">
+        <div class="card border-0 shadow-sm h-100" style="background:#fee2e2;">
             <div class="card-body">
-                <h5>Rejected</h5>
-                <h3>{{ rejected_count }}</h3>
+                <h6 class="text-uppercase text-secondary mb-2">Rejected</h6>
+                <h3 class="mb-0 fw-bold">{{ rejected_count }}</h3>
             </div>
         </div>
     </div>
 
     <div class="col-md-3">
-        <div class="card text-bg-success">
+        <div class="card border-0 shadow-sm h-100" style="background:#dcfce7;">
             <div class="card-body">
-                <h5>Offer</h5>
-                <h3>{{ offer_count }}</h3>
+                <h6 class="text-uppercase text-secondary mb-2">Offer</h6>
+                <h3 class="mb-0 fw-bold">{{ offer_count }}</h3>
             </div>
         </div>
     </div>
 </div>
 
-<a href="{% url 'add_application' %}" class="btn btn-success mb-3">Add Job Application</a>
+<div class="app-card">
+    <h5 class="fw-bold mb-3">Filter by Status</h5>
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-sm">All</a>
+        <a href="{% url 'home' %}?status=Applied" class="btn btn-outline-primary btn-sm">Applied</a>
+        <a href="{% url 'home' %}?status=Interview" class="btn btn-outline-warning btn-sm">Interview</a>
+        <a href="{% url 'home' %}?status=Rejected" class="btn btn-outline-danger btn-sm">Rejected</a>
+        <a href="{% url 'home' %}?status=Offer" class="btn btn-outline-success btn-sm">Offer</a>
+    </div>
 
-<h4>Filter by Status</h4>
-<div class="mb-3">
-    <a href="{% url 'home' %}" class="btn btn-secondary btn-sm">All</a>
-    <a href="{% url 'home' %}?status=Applied" class="btn btn-primary btn-sm">Applied</a>
-    <a href="{% url 'home' %}?status=Interview" class="btn btn-warning btn-sm">Interview</a>
-    <a href="{% url 'home' %}?status=Rejected" class="btn btn-danger btn-sm">Rejected</a>
-    <a href="{% url 'home' %}?status=Offer" class="btn btn-success btn-sm">Offer</a>
-</div>
-
-<table class="table table-bordered table-striped">
-    <thead class="table-dark">
+<div class="table-responsive">
+<table class="table align-middle">
+    <thead class="table-light">
         <tr>
             <th>Company</th>
             <th>Role</th>
@@ -70,30 +76,32 @@
             <td>{{ app.company }}</td>
             <td>{{ app.role }}</td>
             <td>{{ app.applied_date|date:"Y-m-d" }}</td>
-            <td>{{ app.status }}</td>
+            <td><span class="badge text-bg-secondary">{{ app.status }}</span></td>
             <td>
                 {% if app.resume %}
                 <a href="{{ app.resume.file.url }}" target="_blank">
-                Download Resume
+                Download
                 </a>
                 {% else %}
-                No resume
+                <span class="text-secondary">No resume</span>
                 {% endif %}
             </td>
             <td class="d-flex gap-2">
-                <a href="{% url 'edit_application' app.id %}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{% url 'edit_application' app.id %}" class="btn btn-sm btn-outline-warning">Edit</a>
                 <form method="post" action="{% url 'delete_application' app.id %}">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
                 </form>
             </td>
         </tr>
         {% empty %}
         <tr>
-            <td colspan="6">No applications yet.</td>
+            <td colspan="6" class="text-center text-secondary py-4">No applications yet. Add your first one to start tracking.</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+</div>
+</div>
 
 {% endblock %}

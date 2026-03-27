@@ -1,23 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login</title>
-</head>
-<body>
-<h2>Login</h2>
+{% extends "base.html" %}
+{% block title %}Login | Job Tracker{% endblock %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-    <p>
-        <a href="{% url 'password_reset' %}">Forgot password?</a>
-    </p>
-    <p>
-        Don't have an account?
-        <a href="{% url 'register' %}">Register</a>
-    </p>
-</form>
+{% block content %}
+<div class="auth-wrap">
+    <div class="app-card">
+        <h2 class="auth-title">Welcome back</h2>
+        <p class="auth-subtitle">Log in to manage your job applications.</p>
 
-</body>
-</html>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-brand w-100 mt-2">Login</button>
+        </form>
+
+        <div class="mt-3 d-flex flex-column gap-2">
+            <a href="{% url 'password_reset' %}">Forgot password?</a>
+            <span class="text-secondary">Don't have an account? <a href="{% url 'register' %}">Register</a></span>
+        </div>
+    </div>
+</div>
+{% endblock %}

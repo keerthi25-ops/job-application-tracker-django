@@ -1,23 +1,30 @@
 
 {% extends 'base.html' %}
+{% block title %}{{ page_title|default:"Add Job Application" }} | Job Tracker{% endblock %}
 
 {% block content %}
 
-<h2>{{ page_title|default:"Add Job Application" }}</h2>
+<div class="app-card">
+    <h2 class="fw-bold mb-1">{{ page_title|default:"Add Job Application" }}</h2>
+    <p class="text-secondary mb-4">Keep each opportunity organized with clear details.</p>
 
-<form method="post" class="card p-4" enctype="multipart/form-data">
-    {% csrf_token %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
-    <h4>Company Details</h4>
-    {{ company_form.as_p }}
+        <h5 class="fw-bold">Company Details</h5>
+        {{ company_form.as_p }}
 
-    <h4>Job Details</h4>
-    {{ job_form.as_p }}
+        <h5 class="fw-bold mt-3">Job Details</h5>
+        {{ job_form.as_p }}
 
-    <h4>Resume Upload</h4>
-    {{ resume_form.as_p }}
+        <h5 class="fw-bold mt-3">Resume Upload</h5>
+        {{ resume_form.as_p }}
 
-    <button type="submit" class="btn btn-primary">{{ submit_label|default:"Save" }}</button>
-</form>
+        <div class="d-flex gap-2 mt-2">
+            <button type="submit" class="btn btn-brand">{{ submit_label|default:"Save" }}</button>
+            <a href="{% url 'home' %}" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
 
 {% endblock %}
