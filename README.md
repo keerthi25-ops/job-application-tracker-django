@@ -31,3 +31,16 @@ This project helps job seekers track application status, deadlines, interviews, 
 ---
 
 ## 📂 Project Structure
+## Database Configuration
+
+The project uses `SQLite` by default for local development.
+
+To switch to `MySQL`, set these environment variables before starting Django:
+
+- `MYSQL_DATABASE`
+- `MYSQL_USER`
+- `MYSQL_PASSWORD`
+- `MYSQL_HOST`
+- `MYSQL_PORT`
+
+If `MYSQL_DATABASE` is present, Django will use MySQL automatically. Otherwise it falls back to the local `db.sqlite3` file.

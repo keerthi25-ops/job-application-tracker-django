@@ -10,10 +10,19 @@ from django.views.decorators.http import require_POST
 from django.db.models import Count
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from .serializers import JobApplicationSerializer
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def api_health(request):
+    return Response({
+        "status": "ok",
+        "message": "API is reachable"
+    })
 
 
 @login_required

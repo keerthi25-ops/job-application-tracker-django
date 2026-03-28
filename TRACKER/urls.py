@@ -4,6 +4,7 @@ from .views import JobStatsView
 from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('', views.home, name='home'),
+    path('api/health/', views.api_health, name='api_health'),
     path('add/', views.add_application, name='add_application'),
     path('edit/<int:id>/',views.edit_application, name='edit_application'),
     path('delete/<int:id>/',views.delete_application, name='delete_application'),
