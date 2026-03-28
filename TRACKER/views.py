@@ -83,6 +83,7 @@ def add_application(request):
         'job_form': job_form,
         'company_form': company_form,
         'resume_form': resume_form,
+        'current_resume': None,
         'page_title': 'Add Job Application',
         'submit_label': 'Save',
     })
@@ -127,6 +128,7 @@ def edit_application(request, id):
         'job_form': job_form,
         'company_form': company_form,
         'resume_form': resume_form,
+        'current_resume': resume_instance,
         'page_title': 'Edit Job Application',
         'submit_label': 'Update',
     })

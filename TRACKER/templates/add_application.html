@@ -3,7 +3,6 @@
 {% block title %}{{ page_title|default:"Add Job Application" }} | Job Tracker{% endblock %}
 
 {% block content %}
-
 <div class="app-card">
     <h2 class="fw-bold mb-1">{{ page_title|default:"Add Job Application" }}</h2>
     <p class="text-secondary mb-4">Keep each opportunity organized with clear details.</p>
@@ -18,7 +17,31 @@
         {{ job_form.as_p }}
 
         <h5 class="fw-bold mt-3">Resume Upload</h5>
-        {{ resume_form.as_p }}
+        {% if current_resume and current_resume.file %}
+            <div class="alert alert-light border mb-3">
+                <strong>Current resume:</strong>
+                <a href="{{ current_resume.file.url }}" target="_blank" rel="noopener">
+                    {{ current_resume.title|default:current_resume.file.name }}
+                </a>
+            </div>
+        {% endif %}
+
+        <p>
+            {{ resume_form.title.label_tag }}
+            {{ resume_form.title }}
+        </p>
+
+        <div class="mb-3">
+            {{ resume_form.file.label_tag }}
+            {{ resume_form.file }}
+            <div class="form-text">Choose a PDF or document file to attach to this application.</div>
+            <div id="selected-file-name" class="mt-2 text-secondary">No file selected yet.</div>
+            {% if resume_form.file.errors %}
+                <div class="text-danger mt-2">
+                    {{ resume_form.file.errors }}
+                </div>
+            {% endif %}
+        </div>
 
         <div class="d-flex gap-2 mt-2">
             <button type="submit" class="btn btn-brand">{{ submit_label|default:"Save" }}</button>
@@ -26,5 +49,24 @@
         </div>
     </form>
 </div>
+
+<script>
+    (function () {
+        const fileInput = document.getElementById("id_file");
+        const fileName = document.getElementById("selected-file-name");
+
+        if (!fileInput || !fileName) {
+            return;
+        }
+
+        fileInput.addEventListener("change", function () {
+            if (fileInput.files && fileInput.files.length > 0) {
+                fileName.textContent = "Selected file: " + fileInput.files[0].name;
+            } else {
+                fileName.textContent = "No file selected yet.";
+            }
+        });
+    }());
+</script>
 
 {% endblock %}

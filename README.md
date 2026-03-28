@@ -83,6 +83,26 @@ python manage.py migrate
 
 If you need a local reference, copy the values pattern from `.env.example`.
 
+If your Render plan does not include shell access, set these commands in the Render web service settings instead:
+
+Build Command:
+
+```bash
+pip install -r requirements.txt && python manage.py collectstatic --no-input
+```
+
+Pre-Deploy Command:
+
+```bash
+python manage.py migrate
+```
+
+Start Command:
+
+```bash
+gunicorn JOBTRACKER.wsgi:application
+```
+
 ## Backup Workflow
 
 To create a local backup of your project data, run:
