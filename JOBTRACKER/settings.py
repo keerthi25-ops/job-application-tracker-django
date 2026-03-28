@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
+from urllib.parse import parse_qs, unquote, urlparse
 import pymysql
 
 pymysql.version_info = (2, 2, 1, "final", 0)
@@ -91,7 +92,38 @@ WSGI_APPLICATION = 'JOBTRACKER.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-if os.getenv("MYSQL_DATABASE"):
+database_url = os.getenv("DATABASE_URL")
+
+if database_url:
+    parsed = urlparse(database_url)
+    query_params = parse_qs(parsed.query)
+    db_engine_map = {
+        "postgres": "django.db.backends.postgresql",
+        "postgresql": "django.db.backends.postgresql",
+        "pgsql": "django.db.backends.postgresql",
+    }
+
+    db_config = {
+        "ENGINE": db_engine_map.get(parsed.scheme, "django.db.backends.postgresql"),
+        "NAME": parsed.path.lstrip("/"),
+        "USER": unquote(parsed.username or ""),
+        "PASSWORD": unquote(parsed.password or ""),
+        "HOST": parsed.hostname or "",
+        "PORT": str(parsed.port or ""),
+    }
+
+    options = {}
+    sslmode = query_params.get("sslmode", [None])[0]
+    if sslmode:
+        options["sslmode"] = sslmode
+
+    if options:
+        db_config["OPTIONS"] = options
+
+    DATABASES = {
+        "default": db_config
+    }
+elif os.getenv("MYSQL_DATABASE"):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',

@@ -35,6 +35,16 @@ This project helps job seekers track application status, deadlines, interviews, 
 
 The project uses `SQLite` by default for local development.
 
+To switch to `Render Postgres`, set this environment variable before starting Django:
+
+- `DATABASE_URL`
+
+Example:
+
+```text
+DATABASE_URL=postgresql://postgres:password@host:5432/jobtracker
+```
+
 To switch to `MySQL`, set these environment variables before starting Django:
 
 - `MYSQL_DATABASE`
@@ -43,11 +53,21 @@ To switch to `MySQL`, set these environment variables before starting Django:
 - `MYSQL_HOST`
 - `MYSQL_PORT`
 
-If `MYSQL_DATABASE` is present, Django will use MySQL automatically. Otherwise it falls back to the local `db.sqlite3` file.
+Database priority is:
+
+1. `DATABASE_URL` for Postgres
+2. `MYSQL_DATABASE` for MySQL
+3. local `db.sqlite3` fallback
 
 ## Render Deployment Notes
 
-Add these environment variables in your Render service settings:
+For Render Postgres, add this environment variable in your Render web service:
+
+- `DATABASE_URL`
+
+Render provides this connection string from the Postgres dashboard.
+
+For MySQL, add these environment variables in your Render web service:
 
 - `MYSQL_DATABASE`
 - `MYSQL_USER`
