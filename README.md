@@ -45,19 +45,10 @@ Example:
 DATABASE_URL=postgresql://postgres:password@host:5432/jobtracker
 ```
 
-To switch to `MySQL`, set these environment variables before starting Django:
-
-- `MYSQL_DATABASE`
-- `MYSQL_USER`
-- `MYSQL_PASSWORD`
-- `MYSQL_HOST`
-- `MYSQL_PORT`
-
 Database priority is:
 
 1. `DATABASE_URL` for Postgres
-2. `MYSQL_DATABASE` for MySQL
-3. local `db.sqlite3` fallback
+2. local `db.sqlite3` fallback
 
 ## Render Deployment Notes
 
@@ -66,14 +57,6 @@ For Render Postgres, add this environment variable in your Render web service:
 - `DATABASE_URL`
 
 Render provides this connection string from the Postgres dashboard.
-
-For MySQL, add these environment variables in your Render web service:
-
-- `MYSQL_DATABASE`
-- `MYSQL_USER`
-- `MYSQL_PASSWORD`
-- `MYSQL_HOST`
-- `MYSQL_PORT`
 
 After saving the environment variables, run migrations on the deployed service:
 
