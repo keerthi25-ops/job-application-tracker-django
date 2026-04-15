@@ -6,8 +6,9 @@ This project helps job seekers track application status, deadlines, interviews, 
 🔗 Live Demo: https://job-application-tracker-django-2.onrender.com/
 
 ## Tech Stack
+- Python
 - Django
-- SQLite
+- Postgre
 - Bootstrap
 
 ## 🚀 Features
